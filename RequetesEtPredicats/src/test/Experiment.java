@@ -45,6 +45,7 @@ public class Experiment extends JPanel implements TreeSelectionListener {
 
 	public void drawCurrentSelection(Graphics2D g2d) {
 		currentSelection.dessine(g2d);
+		
 	}
 
 	@Override

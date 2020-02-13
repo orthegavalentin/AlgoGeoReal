@@ -39,7 +39,7 @@ public class ReadWrite {
 			for (int j = 0; j < 3; j++) {
 				x = scanner.next();
 				y = scanner.next();
-				System.out.println(x+" - "+y);
+				//System.out.println(x+" - "+y);
 				t.add(new VisiblePoint(Integer.parseInt(x), Integer.parseInt(y)));
 		}}
 		scanner.close();

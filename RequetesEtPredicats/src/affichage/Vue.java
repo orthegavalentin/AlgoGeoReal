@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
+import algoGeo.Segment;
 import test.Experiment;
 import test.ReadWrite;
 
@@ -21,6 +22,7 @@ import test.ReadWrite;
 public class Vue extends JPanel {
 	int width, height;
 	Experiment expe;
+	Segment s1,s2;
 	// n : le nombre de lignes
 	// width, height : largeur, hauteur de la fenetre
 	public Vue(int ww, int wh) {
@@ -29,6 +31,8 @@ public class Vue extends JPanel {
 		this.width = ww;
 		this.height = wh;
 		setPreferredSize(new Dimension(ww,wh));
+		s1=new Segment(new VisiblePoint(10,10),new VisiblePoint(60,60));
+		s2=new Segment(new VisiblePoint(80,80),new VisiblePoint(50,20));
 	}
 
 	// affiche les résultats d'une expérience
@@ -44,8 +48,11 @@ public class Vue extends JPanel {
 		g2d.translate(100, 0);
 		g2d.scale(0.9, 0.9);
 		g2d.setColor(Couleur.fg);
-		if(expe == null) return;
-		expe.drawCurrentSelection(g2d);		
+		s1.dessine(g2d);
+		s2.dessine(g2d);
+		System.out.println("l'intersection est ="+s1.intersectionSegment(s2));
+		/*if(expe == null) return;
+		expe.drawCurrentSelection(g2d);	*/	
 	}
 
 

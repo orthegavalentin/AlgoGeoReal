@@ -22,18 +22,38 @@ public class Segment {
 		
 		for (int i = 0; i<sommets.length; i++)
 			sommets[i].dessine(g);
+		
 	}
-	public boolean orientation(){
+	
+	 boolean onSegment(VisiblePoint p, VisiblePoint q,VisiblePoint r) 
+	{ 
+	    if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && 
+	        q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) 
+	    return true; 
+	  
+	    return false; 
+	} 
+	
+	
+	
+	
+	public int orientation(VisiblePoint A,VisiblePoint B,VisiblePoint C){
 		
-		/*double x1= 
-		double y1=
-		double x2=
-		double y2=*/
 		
 		
 		
+		double ABx1= B.x-A.x;
+		double ABy1= B.y-A.y;
+		double ACx2= C.x-A.x;
+		double ACy2= C.y-A.y;
 		
-		return false;
+		double det=(ABx1*ACy2)-(ABy1*ACx2);
+		
+		if(det>0) {return -1;}
+		if(det<0) {return 1;}
+		
+		
+		return 0;
 		
 		
 		
@@ -41,21 +61,30 @@ public class Segment {
 	}
 	//etant donne deux segment AB et CD
 	//on teste d'abord avec le premier segment ,on passe à l'autre sgment si seulement si le premier est segment a donne des differents
-	public void intersectionSegment(Segment s1,Segment s2 ){
+	public boolean intersectionSegment(Segment s2 ){
 		
-		double ABx= s1.sommets[1].x-s1.sommets[0].x;
-		double ABy= s1.sommets[1].y-s1.sommets[0].y;
-		double ACx= s2.sommets[0].x-s1.sommets[0].x;
-		double ACy= s2.sommets[0].y-s1.sommets[0].y;
-		double ADx= s2.sommets[1].x-s1.sommets[0].x;
-		double ADy= s2.sommets[1].y-s1.sommets[0].y;
-		double CDx= s2.sommets[1].x-s2.sommets[0].x;
-		double CDy= s2.sommets[1].y-s2.sommets[0].y;
-		double CAx= s1.sommets[0].x-s2.sommets[0].x;
-		double CAy= s1.sommets[0].y-s2.sommets[0].y;
-		double CBx= s1.sommets[1].x-s2.sommets[0].x;
-		double CBy= s1.sommets[1].y-s2.sommets[0].y;
-		doublex=Math.atan2(y, x)
+		int o1=orientation(this.sommets[0],this.sommets[1],s2.sommets[0]);
+		int o2=orientation(this.sommets[0],this.sommets[1],s2.sommets[1]);
+		int o3=orientation(s2.sommets[0],s2.sommets[1],this.sommets[0]);
+		int o4=orientation(s2.sommets[0],s2.sommets[1],this.sommets[1]);
+		
+		if(o1!=o2 && o3!=04) {
+			
+			return true;
+		}
+		// Special Cases 
+	    // p1, q1 and p2 are colinear and p2 lies on segment p1q1 
+	    if (o1 == 0 && onSegment(this.sommets[0],s2.sommets[0],this.sommets[1])) return true; 
+	  
+	    // p1, q1 and q2 are colinear and q2 lies on segment p1q1 
+	    if (o2 == 0 && onSegment(this.sommets[0],s2.sommets[1],this.sommets[1])) return true; 
+	  
+	    // p2, q2 and p1 are colinear and p1 lies on segment p2q2 
+	    if (o3 == 0 && onSegment(s2.sommets[0],this.sommets[0],s2.sommets[1])) return true; 
+	  
+	    // p2, q2 and q1 are colinear and q1 lies on segment p2q2 
+	    if (o4 == 0 && onSegment(s2.sommets[0],this.sommets[1],s2.sommets[1])) return true; 
+		//doublex=Math.atan2(y, x)
 		//AB,AC
 		//Segment vectorAB=new Segment(new VisiblePoint(ABx,ABy),)
 		
@@ -76,7 +105,7 @@ public class Segment {
 				
 				(alternance veux dire que le point de su dsegment 1 est parmis lesd deusx autres points)*/
 				
-		return false;
+		return false ;
 		
 	}
 

@@ -19,5 +19,9 @@ public class Test extends DefaultMutableTreeNode{
 	
 	public void dessine(Graphics2D g) {
 		if (triangle != null) triangle.dessine(g);
+		int orientation=triangle.Orientation();
+		if(orientation==1) {System.out.println(" sens anti horaire");}
+		if(orientation==-1) {System.out.println(" sens  horaire");}
+		if(orientation==0) {System.out.println(" collineaire");}
 	}
 }
