@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.time.Duration;
+import java.time.Instant;
 
 import javax.swing.JOptionPane;
 import ui.Style;
@@ -21,9 +23,11 @@ public class Geste {
 	private ArrayList<PointVisible> points ;
 	private Style style = new Style();
 	public float score;
+	public ArrayList<Instant> time;
 
 	public Geste() {
 		points = new ArrayList<PointVisible>();
+		time =new ArrayList<Instant>();
 		score=0;
 	}
 	
@@ -410,6 +414,227 @@ public class Geste {
 		
 		
 	}
+	//feature cos
+	public double feature1() {
+		int x0=this.points.get(0).x;
+		int y0=this.points.get(0).y;
+		int x2=this.points.get(2).x;
+		int y2=this.points.get(2).y;
+		
+		return (x2-x0)/Math.sqrt(Math.pow((x2-x0), 2)+Math.pow((y2-y0), 2));
+		
+		
+		
+		
+		
+	}
+	
+	
+	//feature sin de l,angle entre le premier et deuxieme point du geste
+		public double feature2() {
+			int x0=this.points.get(0).x;
+			int y0=this.points.get(0).y;
+			int x2=this.points.get(2).x;
+			int y2=this.points.get(2).y;
+			
+			return (y2-y0)/Math.sqrt(Math.pow((x2-x0), 2)+Math.pow((y2-y0), 2));
+			
+			
+			
+			
+			
+		}
+		
+		
+		//la longeur de la la diagonale du bounding box du geste
+				public double feature3() {
+					
+					
+					Rectangle box=this.computeBoundingBox();
+					int maxX=box.x+box.width;
+					int maxY=box.y+box.height;
+					
+					
+					return Math.sqrt(Math.pow(maxX-box.x, 2)+Math.pow(maxY-box.y, 2));
+					
+					
+					
+					
+					
+				}
+				
+				
+				//l'angle de la diagonale du bounding box
+				public double feature4() {
+					
+					
+					Rectangle box=this.computeBoundingBox();
+					int maxX=box.x+box.width;
+					int maxY=box.y+box.height;
+					
+					
+					return Math.atan2(maxY-box.y, maxX-box.x);
+				
+					
+				}
+				
+
+				//la distance entre le premier et dernier point  du geste
+				public double feature5() {
+					
+					
+					PointVisible first= this.points.get(0);
+					PointVisible last=this.points.get(points.size()-1);
+					
+					
+					
+					return Math.sqrt(Math.pow(last.x-first.x, 2)+Math.pow(last.y-first.y, 2));
+				
+					
+				}
+				
+				
+				
+				// cosinus de l'angle entre le premier et dernier point du geste
+                public double feature6() {
+					
+					
+					PointVisible first= this.points.get(0);
+					PointVisible last=this.points.get(points.size()-1);
+					double length=this.feature5();
+					
+					
+					
+					return (last.x-first.x)/length;
+				
+					
+				}
+                
+                
+            	// sinus de l'angle entre le premier et dernier point du geste
+                public double feature7() {
+					
+					
+					PointVisible first= this.points.get(0);
+					PointVisible last=this.points.get(points.size()-1);
+					double length=this.feature5();
+					
+					
+					
+					return (last.y-first.y)/length;
+				
+					
+				}
+                
+             // la longeur totale du tracé
+                public float feature8() {
+					
+					
+					
+					
+					
+					
+					return this.computeLength();
+				
+					
+				}
+                
+                public double computeAngle(PointVisible p1,PointVisible p2 ,PointVisible P3 ) {
+                	//xp
+                	int deltaX=P3.x-p2.x;
+                	//yp
+                	int deltaY=P3.y-p2.y;
+                	
+                	//Xp-1
+                	int deltaXX=p2.x-p1.x;
+                	
+                	//Yp-1
+                	int deltaYY=p2.y-p1.y;
+                	
+                	
+                	return Math.atan2(((deltaX* deltaYY)-(deltaXX*deltaY)),(((deltaX*deltaXX))+(deltaY*deltaYY)));
+                	
+                	
+                }
+		
+		
+		
+		
+		
+		//l'angle total traversé
+                public double feature9() {
+                	double d=0;
+                	
+                	for(int i =1;i<this.points.size()-1;i++) {
+                		
+                		
+                		d+= this.computeAngle(this.points.get(i-1),this.points.get(i),this.points.get(i+1));
+                		
+                		
+                		
+                		
+                	}
+                	
+                	return d;
+                	
+                	
+                	
+                }
+                
+                
+              //l'angle total traversé en valeur absolue
+                public double feature10() {
+                	double d=0;
+                	
+                	for(int i =1;i<this.points.size()-1;i++) {
+                		
+                		
+                		d+= Math.abs(this.computeAngle(this.points.get(i-1),this.points.get(i),this.points.get(i+1)));
+                		
+                		
+                		
+                		
+                	}
+                	
+                	return d;
+                	
+                	
+                	
+                }
+              //l'angle total traversé au carré
+                public double feature11() {
+                	double d=0;
+                	
+                	for(int i =1;i<this.points.size()-1;i++) {
+                		
+                		
+                		d+= Math.pow(this.computeAngle(this.points.get(i-1),this.points.get(i),this.points.get(i+1)),2);
+                		
+                		
+                		
+                		
+                	}
+                	
+                	return d;
+                	
+                	
+                	
+                	//public double feature12()
+                	
+                	
+                }
+                public float feature13() {
+            		System.out.println("la durree="+(time.get(time.size()-1).toEpochMilli()-time.get(0).toEpochMilli())+" "+time.size());
+            		
+            		
+            		return time.get(time.size()-1).toEpochMilli()-time.get(0).toEpochMilli();
+            		
+            	}
+                
+	
+	
+	
+	
 
 	@Override
 	public int hashCode() {

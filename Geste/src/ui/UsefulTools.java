@@ -37,6 +37,7 @@ public class UsefulTools extends JToolBar {
 		});
 		this.add(jb);
 		
+		
 		jb = new JButton(new AbstractAction("RotateToZero") {
 			public void actionPerformed(ActionEvent e) {
 				vue.rotateToZero();
@@ -50,12 +51,7 @@ public class UsefulTools extends JToolBar {
 			}
 		});
 		this.add(jb);
-		jb = new JButton(new AbstractAction("Recognize") {
-			public void actionPerformed(ActionEvent e) {
-				vue.recognize();
-			}
-		});
-		this.add(jb);
+		
 		
 		
 		jb = new JButton(new AbstractAction("Recenter") {
@@ -64,9 +60,25 @@ public class UsefulTools extends JToolBar {
 			}
 		});
 		this.add(jb);
+		
+		jb = new JButton(new AbstractAction("Recognize") {
+			public void actionPerformed(ActionEvent e) {
+				vue.recognize();
+			}
+		});
+		this.add(jb);
+		
+	
 		jb = new JButton(new AbstractAction("middle") {
 			public void actionPerformed(ActionEvent e) {
 				vue.middle();
+			}
+		});
+		this.add(jb);
+		
+		jb = new JButton(new AbstractAction("Duration") {
+			public void actionPerformed(ActionEvent e) {
+				vue.duration();;
 			}
 		});
 		this.add(jb);

@@ -129,6 +129,16 @@ public class Vue extends JPanel {
 		}
 		frame.setVisible(true);	
 	}
+	
+	public void duration() {
+		
+		
+		
+		for (int i = 0; i < gestes.size(); i++) {
+			gestes.get(i).feature13();
+		}
+		
+	}
 	public void middle() {
 		
 		//frame.addGesture(gestes.get(gestes.size()-1));

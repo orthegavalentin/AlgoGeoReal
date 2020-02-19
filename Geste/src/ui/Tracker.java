@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.time.Instant;
 
 import geo.Geste;
 
@@ -19,6 +20,7 @@ public class Tracker implements MouseMotionListener, MouseListener{
 	private void startTracking(Point P0) {
 		geste = new Geste();
 		vue.add(geste);
+		
 		geste.add(P0);
 		on = true;
 	}
@@ -59,7 +61,11 @@ public class Tracker implements MouseMotionListener, MouseListener{
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (on) {
+			
 			geste.add(e.getPoint());
+			Instant now=Instant.now();
+			geste.time.add(now);
+		
 			vue.repaint();
 		}
 	}
