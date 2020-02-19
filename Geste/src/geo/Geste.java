@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JOptionPane;
 import ui.Style;
 import ui.config.Parameters;
@@ -17,9 +20,11 @@ import ui.io.ReadWritePoint;
 public class Geste {
 	private ArrayList<PointVisible> points ;
 	private Style style = new Style();
+	public float score;
 
 	public Geste() {
 		points = new ArrayList<PointVisible>();
+		score=0;
 	}
 	
 	public Geste(String fileName) {
@@ -147,20 +152,20 @@ public class Geste {
 			
 			float l=this.computeLength()/(k-1);
 			ArrayList<PointVisible> newPoints =new ArrayList<PointVisible>();
-			newPoints.add(points.get(0));
+			newPoints.add(this.points.get(0));
 			float D=0;
 			
-			for(int i=1;i<points.size();i++) {
+			for(int i=1;i<this.points.size();i++) {
 				
-				float d=Distance(points.get(i-1),points.get(i));
+				float d=Distance(this.points.get(i-1),this.points.get(i));
 				PointVisible q=new PointVisible(0,0);
 				if((D+d)>=l) {
 					
-					q.x=(int) (points.get(i-1).x+((l-D)/d)*(points.get(i).x-points.get(i-1).x));
-					q.y=(int) (points.get(i-1).y+((l-D)/d)*(points.get(i).y-points.get(i-1).y));
+					q.x=(int) (this.points.get(i-1).x+((l-D)/d)*(this.points.get(i).x-this.points.get(i-1).x));
+					q.y=(int) (this.points.get(i-1).y+((l-D)/d)*(this.points.get(i).y-this.points.get(i-1).y));
 					
 					newPoints.add(q);
-					points.add(i,q);
+					this.points.add(i,q);
 					D=0;
 				}else {
 					
@@ -180,13 +185,13 @@ public class Geste {
 			PointVisible p0=new PointVisible(0,0);
 			int xx=0;
 			int yy =0;
-			for(PointVisible point:points) {
+			for(PointVisible point:this.points) {
 				xx+=point.x;
 				yy+=point.y;
 				
 			}
-			p0.x=xx/points.size();
-			p0.y=yy/points.size();
+			p0.x=xx/this.points.size();
+			p0.y=yy/this.points.size();
 			return p0;
 			
 			
@@ -197,19 +202,21 @@ public class Geste {
 			PointVisible centroid=new PointVisible(0,0);
 			centroid=this.Centroid();
 			
+			double angle=Math.atan2(centroid.y-this.points.get(0).y, centroid.x-this.points.get(0).x);
 			
-			return Math.atan2(centroid.y-points.get(0).y, centroid.x-points.get(0).x);
+			System.out.println("angle="+angle);
+			return angle;
 		}
 		
 		
-		public Geste RotateBy() {
+		public Geste RotateBy(double w) {
 			PointVisible centroid=new PointVisible(0,0);
-			double w=this.indicativeAngle();
+			//w=this.indicativeAngle();
 			System.out.println((int)this.indicativeAngle());
 			centroid=this.Centroid();
 			ArrayList<PointVisible> newPoints =new ArrayList<PointVisible>();
 			
-			for(PointVisible p:points) {
+			for(PointVisible p:this.points) {
 				
 				PointVisible q=new PointVisible(0,0);
 			q.x=(int)(((p.x-centroid.x)*Math.cos(-w))-((p.y-centroid.y)*Math.sin(-w))+centroid.x);
@@ -240,7 +247,7 @@ public class Geste {
 			ArrayList<PointVisible> newPoints =new ArrayList<PointVisible>();
 			
 			Rectangle B=this.computeBoundingBox();
-			for(PointVisible point:points) {
+			for(PointVisible point:this.points) {
 				PointVisible q=new PointVisible(0,0);
 				q.x=point.x*size/B.width;
 				q.y=point.y*size/B.height;
@@ -260,7 +267,7 @@ public class Geste {
 			PointVisible centroid=new PointVisible(0,0);
 			ArrayList<PointVisible> newPoints =new ArrayList<PointVisible>();
 			centroid=this.Centroid();
-			for(PointVisible point:points) {
+			for(PointVisible point:this.points) {
 				PointVisible q=new PointVisible(0,0);
 				q.x=point.x+p0.x-centroid.x;
 				q.y=point.y+p0.y-centroid.y;
@@ -276,4 +283,186 @@ public class Geste {
 		public Geste oRecenter() {
 			return this; // à modifier...
 		}
-}
+		
+		
+		
+		
+		public float PathDistance(Geste B) {
+			
+			float d=0;
+			
+			
+			for(int i=0;i<this.points.size();i++) {
+				if(i<B.points.size())
+				d+=Distance(this.points.get(i),B.points.get(i));
+				
+				
+				
+			}
+			
+			
+			
+			return d/this.points.size();
+		
+		}
+		
+		
+	public float DistanceAtAngle(Geste template, double angle) {
+		
+		
+		Geste newGeste=new Geste();
+		
+		newGeste=this.RotateBy(angle);
+		float d=0;
+		
+		d=newGeste.PathDistance(template);
+		
+		return d;
+		
+		}
+	
+	
+	public float DistanceAtBestAngle(Geste template,double thetaA,double thetaB,double delta) {
+		
+		float  phi=(float) Math.sqrt((-1+Math.sqrt(5)));
+		
+		
+		float x1=(float) ((phi*thetaA)+((1-phi)*thetaB));
+		
+		float f1=this.DistanceAtAngle(template, x1);
+		
+		float x2=(float) (((1-phi)*thetaA)+(phi*thetaB));
+		
+		float f2=this.DistanceAtAngle(template, x2);
+		
+		if(Math.abs(thetaB-thetaA)>delta) {
+			
+			if(f1<f2) {
+				
+				thetaB=x2;
+				x2=x1;
+				f2=f1;
+				x1=(float) (phi*thetaA+(1-phi)*thetaB);
+				f1=this.DistanceAtAngle(template,x1);
+				
+		
+		
+			}else {
+				thetaA=x1;
+				x1=x2;
+				f1=f2;
+				
+				x2=(float) (((1-phi)*thetaA)+(phi*thetaB));
+				f2=this.DistanceAtAngle(template,x2);
+				
+				
+				
+				
+				
+				
+			}
+			
+			
+		}
+		if(f1>f2) {return f2;}
+		
+		
+		return f1;
+		
+		
+	}
+	
+	
+	public Geste Recognize(ArrayList<Geste> templates){
+		
+		float b=Float.POSITIVE_INFINITY;
+		double theta=Math.PI/4;
+		double delta=Math.PI/90;
+		Geste newT= new Geste();
+		int size=250;
+		Map<Float,Geste> result = new HashMap<Float,Geste>();
+		float score=0;
+		
+		for(int i =0;i<templates.size()-1;i++) {
+			
+			
+			
+			float d=this.DistanceAtBestAngle(templates.get(i),-theta,theta,delta);
+			
+			if(d<b) {
+				
+				b=d;
+				newT=templates.get(i);
+				score= (float) ((1-b)/0.5*(Math.sqrt((size*size)+(size*size))));
+				
+			}
+			
+			
+			
+			
+		}
+		
+	
+		newT.score=score;
+		
+		
+		return newT;
+		
+		
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((points == null) ? 0 : points.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Geste other = (Geste) obj;
+		if (points == null) {
+			if (other.points != null)
+				return false;
+		} else if (!points.equals(other.points))
+			return false;
+		return true;
+	}
+	
+	
+	
+	
+		
+		
+	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+

@@ -6,6 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JPanel;
 
 import geo.Geste;
@@ -94,7 +97,8 @@ public class Vue extends JPanel {
 	public void rotateToZero() {
 		MainWindow frame = new MainWindow("rotateTozero");
 		for (int i = 0; i < gestes.size(); i++) {
-			frame.addGesture(gestes.get(i).RotateBy());
+			double indicativeAngle=gestes.get(i).indicativeAngle();
+			frame.addGesture(gestes.get(i).RotateBy(indicativeAngle));
 		}
 		frame.setVisible(true);
 	}
@@ -107,14 +111,36 @@ public class Vue extends JPanel {
 		}
 		frame.setVisible(true);
 	}
+	public void recognize() {
+		// TODO Auto-generated method stub	
+		MainWindow frame = new MainWindow("recognize");
+		Geste recognised=new Geste();
+		recognised=gestes.get(gestes.size()-1).Recognize(gestes);
+			frame.addGesture(recognised);
+		
+		frame.setVisible(true);
+	}
 
 	public void recenter() {
-		MainWindow frame = new MainWindow("rescale");
+		MainWindow frame = new MainWindow("recenter");
 		PointVisible p0=new PointVisible(0,0);
 		for (int i = 0; i < gestes.size(); i++) {
 			frame.addGesture(gestes.get(i).translateTo(p0));
 		}
 		frame.setVisible(true);	
 	}
+	public void middle() {
+		
+		//frame.addGesture(gestes.get(gestes.size()-1));
+		
+		MainWindow frame = new MainWindow("middle");
+		PointVisible p0=new PointVisible(width/2,height/2);
+		for (int i = 0; i < gestes.size(); i++) {
+			frame.addGesture(gestes.get(i).translateTo(p0));
+		}
+		//System.out.println("nombre de template = "+gestes.size());
+		frame.setVisible(true);	
+	}
+	
 
 }

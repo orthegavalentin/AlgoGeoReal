@@ -50,10 +50,23 @@ public class UsefulTools extends JToolBar {
 			}
 		});
 		this.add(jb);
+		jb = new JButton(new AbstractAction("Recognize") {
+			public void actionPerformed(ActionEvent e) {
+				vue.recognize();
+			}
+		});
+		this.add(jb);
+		
 		
 		jb = new JButton(new AbstractAction("Recenter") {
 			public void actionPerformed(ActionEvent e) {
 				vue.recenter();
+			}
+		});
+		this.add(jb);
+		jb = new JButton(new AbstractAction("middle") {
+			public void actionPerformed(ActionEvent e) {
+				vue.middle();
 			}
 		});
 		this.add(jb);
