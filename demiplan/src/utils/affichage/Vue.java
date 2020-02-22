@@ -135,7 +135,7 @@ public class Vue extends JPanel implements MouseWheelListener, MouseListener, Ac
 		if (animationOn) ec.stopAnimation();
 	
 		if(e.getActionCommand().equals("b1")){
-			for (PointVisible s: points){
+			for (PointVisible s: ec.getecpoints()){
 				rw.add(s.x+";" + s.y+";"+s.getLabel());
 			}
 			try {

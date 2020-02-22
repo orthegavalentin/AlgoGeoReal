@@ -619,10 +619,47 @@ public class Geste {
                 	
                 	
                 	
-                	//public double feature12()
+               
                 	
                 	
                 }
+                
+                
+                public double feature12(){
+                	
+                	
+                	double max=0;
+                	
+                	
+                	for(int i=1;i<this.time.size();i++) {
+                		double deltax=this.points.get(i).x-this.points.get(i-1).x;
+                		double deltay=this.points.get(i).y-this.points.get(i-1).y;
+                		double deltaTime=this.time.get(i).toEpochMilli()-this.time.get(i-1).toEpochMilli();
+                		double d=((deltax*deltax)+(deltay*deltay))/(deltaTime*deltaTime);
+                		
+               if(d>max) {
+            	   
+            	   max=d;
+               }
+               
+              
+                		
+                		
+                		
+                		
+                	}
+                	
+                	
+                	
+                	
+                	return max;
+                	
+                	
+                	
+                	
+                }
+                
+                
                 public float feature13() {
             		System.out.println("la durree="+(time.get(time.size()-1).toEpochMilli()-time.get(0).toEpochMilli())+" "+time.size());
             		
@@ -630,6 +667,11 @@ public class Geste {
             		return time.get(time.size()-1).toEpochMilli()-time.get(0).toEpochMilli();
             		
             	}
+                
+                
+                
+                
+                
                 
 	
 	
